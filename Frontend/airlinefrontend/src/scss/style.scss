@@ -1,0 +1,11 @@
+$primary: #985F99;
+$secondary: #C9C5BA;
+
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+
+.slider {
+    width: calc(calc(1.325rem + 0.9vw)*3);
+    text-align: right;
+}
