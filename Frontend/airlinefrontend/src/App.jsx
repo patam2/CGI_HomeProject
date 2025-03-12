@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './scss/style.css'
 import Slider from "react-slick";
+import {FlightTable} from './FlightTable.jsx'
 
 
 function FlyPageSlider() {
@@ -34,21 +35,20 @@ function FlyPageSlider() {
 }
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
       <nav className='navbar bg-black   '>
         <div className='container-fluid'>
           <a className="navbar-brand text-secondary" href='#'>FlyCGI</a>
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link text-secondary" aria-current="page" href="#">About us</a>
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <a className="nav-link text-secondary" aria-current="page" href="#">About us</a>
               </li>
             </ul>
         </div>
       </nav>
-      <div className='bg-primary p-5 text-center '>
+      <div className='bg-primary p-5 text-center mb-3'>
         <div className="d-flex justify-content-center mb-3">
           <div className='fs-2 fw-bolder text-secondary '>
             <FlyPageSlider/>
@@ -62,45 +62,7 @@ function App() {
         </div>
       </div>
       <div className='container'>
-        <input></input>
-        <table>
-          <thead>
-            <th>
-              Sihtkoht
-            </th>
-            <th>
-              Väljumise kellaeg
-            </th>
-            <th>
-              Lennu kestvus
-            </th>
-            <th>
-              Hind
-            </th>
-            <th>
-              Pakkuja
-            </th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                Riia
-              </td>
-              <td>
-                19:00
-              </td>
-              <td>
-                5h
-              </td>
-              <td>
-                199
-              </td>
-              <td>
-                Ryanair
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <FlightTable/>
       </div>
     </>
   )
