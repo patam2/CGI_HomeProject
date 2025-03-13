@@ -52,19 +52,26 @@ export function FlightTable() {
 
     return (
         <>
-            <div className="row">
-                <div className="col-9">
-                    <input className="w-50" onChange={(e) => handleFilter(e, 'departure')} ></input>
-                    <input className="w-50" onChange={(e) => handleFilter(e, 'arrival')}></input>
+            <div className="row mb-3 input-group input-group-lg flex-nowrap">
+                <div className="col-8 row">
+                    <div className="col-6 g-1">
+                        <input className="form-control rounded-start  h-100" placeholder="Kust lendame?" onChange={(e) => handleFilter(e, 'departure')} ></input>
+                    </div>
+                    <div className="col-6 g-1">
+                        <input className="form-control  h-100 rounded-end" placeholder="Kuhu lendame?" onChange={(e) => handleFilter(e, 'arrival')}></input>
+                    </div>
                 </div>
-                <div className="col-3">
-                    <button></button>
+                <div className="col-auto">
+                    <input type="date" className="h-100 form-control rounded-start"></input>
+                </div>
+                <div className="col-auto">
+                    <input type="number" className="form-control h-100 rounded-end" placeholder="Max hind"></input>
                 </div>
             </div>
 
             <table className="w-100">
                 <thead>
-                    <tr>
+                    <tr className="table-header">
                         <th>Väljumine</th>
                         <th>Sihtkoht</th>
                         <th>Kuupäev</th>
@@ -74,8 +81,8 @@ export function FlightTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredFlightData.map((val) => (
-                        <tr>
+                    {filteredFlightData.map((val, indx) => (
+                        <tr className={"table-item stripe-" + indx%2}>
                             <td>{val.departure}</td>
                             <td>{val.arrival}</td>
                             <td>{val.flightDate}</td>

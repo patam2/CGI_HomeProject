@@ -11968,4 +11968,26 @@ textarea.form-control-lg {
 .slider {
   width: calc((1.325rem + 0.9vw) * 3);
   text-align: right;
+}
+
+.table-item {
+  color: #ffc107;
+}
+.table-item:hover {
+  background-color: white;
+  color: #3b3b3b;
+  cursor: pointer;
+}
+
+.stripe-0 {
+  background-color: #222222;
+}
+
+.stripe-1 {
+  background-color: #3b3b3b;
+}
+
+.table-header {
+  background-color: #3b3b3b;
+  color: white;
 }/*# sourceMappingURL=style.css.map */

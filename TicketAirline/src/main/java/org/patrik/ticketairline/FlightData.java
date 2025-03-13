@@ -18,3 +18,4 @@ public class FlightData {
         this.flightDate = flightDate;
     }
 }
+

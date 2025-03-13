@@ -24,8 +24,12 @@ public class ServeWeb {
     public String serveFlights() throws JsonProcessingException {
         FlightData[] allFlights =
                 {
-                        new FlightData("Tallinn", "Riga", "19:00", "1h", "AAAA", "02.03.12"),
-                        new FlightData("Riga", "Tokyo", "08:00", "12h", "TLNJP", "02.03.12"),
+                        new FlightData("Tallinn", "Vargamäe", "19:00", "1h", "AAAA", "02.03.12"),
+                        new FlightData("Mustamäe", "Viimsi", "08:00", "12h", "TLNJP", "02.03.12"),
+                        new FlightData("Tartu", "Tallinn", "20:00", "1h", "AAdAA", "03.03.12"),
+                        new FlightData("Paris", "Tokyo", "20:00", "10h", "PARTO", "03.03.12"),
+                        new FlightData("London", "Paris", "15:00", "10h", "PARTO", "03.03.12"),
+
                 };
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(allFlights);
