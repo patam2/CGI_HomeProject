@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
-
-export async function fetchTable() {
-  return fetch(`${import.meta.env.VITE_API_URL}/api/flights`).then(res => res.json());
-}
 
 
 export function FlightTable() {
     const [flightData, setFlightData] = useState(Array())
     const [filteredFlightData, setFilteredFlightData] = useState(Array())
     const [filter, setFilter] = useState({"departure": "", "arrival": ""})
+
+    let navigate = useNavigate()
+
     useEffect(() => {
         const dataFetch = async () => {
           const data = await (
@@ -23,6 +23,10 @@ export function FlightTable() {
         dataFetch();
       }, []);
     console.log(flightData);
+
+    const redirect = (where) => {
+        navigate("/flight/" + where)
+    }
 
     const handleFilter = (ctx, key) => {
         const filtered = [];
@@ -52,7 +56,7 @@ export function FlightTable() {
 
     return (
         <>
-            <div className="row mb-3 input-group input-group-lg flex-nowrap">
+            <div className="row mb-3 flex-nowrap">
                 <div className="col-8 row">
                     <div className="col-6 g-1">
                         <input className="form-control rounded-start  h-100" placeholder="Kust lendame?" onChange={(e) => handleFilter(e, 'departure')} ></input>
@@ -64,7 +68,7 @@ export function FlightTable() {
                 <div className="col-auto">
                     <input type="date" className="h-100 form-control rounded-start"></input>
                 </div>
-                <div className="col-auto">
+                <div className="col-2">
                     <input type="number" className="form-control h-100 rounded-end" placeholder="Max hind"></input>
                 </div>
             </div>
@@ -82,7 +86,7 @@ export function FlightTable() {
                 </thead>
                 <tbody>
                     {filteredFlightData.map((val, indx) => (
-                        <tr className={"table-item stripe-" + indx%2}>
+                        <tr onClick={() => redirect(val.flightNumber)} className={"table-item stripe-" + indx%2}>
                             <td>{val.departure}</td>
                             <td>{val.arrival}</td>
                             <td>{val.flightDate}</td>
