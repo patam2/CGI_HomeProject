@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 
@@ -9,23 +9,27 @@ function isSublistInNestedArray(sublist, nestedArray) {
     );
 }
 
-function FlightBookGrid({ flightData, requirements, changeRequirements}) {
+  
+
+function FlightBookGrid({ flightData, requirements}) {
     const [seatsSuggested, setSuggestedSeats] = useState(Array())
-    useEffect(() => {
-        const checkForSeatSuitability = (seat) => {
-            if (seat.isTaken) {
+    const [activeSeat, setActiveSeat] = useState(Array())
+    const checkForSeatSuitability = (seat) => {
+        if (seat.isTaken) {
+            return false
+        }
+        else {
+            if (seat.legRoom === "Normal" && requirements.legRoom === true) {
                 return false
             }
-            else {
-                if (seat.legRoom === "Normal" && requirements.legRoom === true) {
-                    return false
-                }
-                if (seat.closeToExit === false && requirements.closeToExit === true) {
-                    return false
-                }
+            if (seat.closeToExit === false && requirements.closeToExit === true) {
+                return false
             }
-            return true
         }
+        return true
+    }
+    useEffect(() => {
+
 
         const suggestseats = () => {
             setSuggestedSeats([]);
@@ -50,13 +54,37 @@ function FlightBookGrid({ flightData, requirements, changeRequirements}) {
             }
             
             setSuggestedSeats(newSuggestedSeats);
+            setActiveSeat(newSuggestedSeats[newSuggestedSeats.length-1])
             console.log("Added seats:", newSuggestedSeats);
         };
         suggestseats()
-        console.log(seatsSuggested, requirements)
+        //console.log(seatsSuggested, requirements, activeSeat)
         },[flightData, requirements] 
     )
 
+    const filterForSuggestedSeats = (arr) => {
+        if (isSublistInNestedArray(arr, seatsSuggested)) {
+            setActiveSeat(arr)
+        }
+        else {
+            if (checkForSeatSuitability(flightData[arr[0]][arr[1]])) {
+                const newSuggestedSeats = [...seatsSuggested]
+                for (let selectedSeat = 0; selectedSeat < newSuggestedSeats.length; selectedSeat ++) {
+                    console.log(arr,newSuggestedSeats[selectedSeat])
+                    if (activeSeat[0] == newSuggestedSeats[selectedSeat][0] && activeSeat[1] == newSuggestedSeats[selectedSeat][1]) {
+                        newSuggestedSeats.splice(selectedSeat, 1);
+                        console.log('found')
+                        break
+                    }
+                }
+                newSuggestedSeats.push(arr)
+
+                setSuggestedSeats(newSuggestedSeats)
+                setActiveSeat(newSuggestedSeats[newSuggestedSeats.length-1])
+
+            }
+        }
+    }
 
     return (
         <div className="d-flex flex-row">
@@ -64,11 +92,17 @@ function FlightBookGrid({ flightData, requirements, changeRequirements}) {
                 <div className="row mb-2 flex-column p-3" key={i}>
                     {elem.map((seat, j) => {
                         return (
-                            <div className={`col text-center pt-${j === 3 ? "3": "1"} ps-${seat.legRoom === "Extra" ? "2" : "0"}`} key={seat.seatNumber}>
+                            <div 
+                                onClick={() => {filterForSuggestedSeats([i, j])}}
+                                className={`col text-center pt-${j === 3 ? "3": "1"} ps-${seat.legRoom === "Extra" ? "2" : "0"}`} key={seat.seatNumber}>
                                 <div className={
-                                    `p-0 my-auto border square rounded ${seat.isTaken ? "taken-seat" : ""} 
-                                    ${isSublistInNestedArray([i,j ], seatsSuggested) ? "chosen-seat": ""}`}>
-                                    <span className="align-middle h-100">{seat.seatNumber}</span>
+                                    `p-0 my-auto square rounded 
+                                    ${seat.isTaken ? "taken-seat" : ""} 
+                                    ${isSublistInNestedArray([i,j ], seatsSuggested) ? "chosen-seat": ""}
+                                    ${JSON.stringify([i,j]) == JSON.stringify(activeSeat) ? "selected-seat": "border "}
+                                    `
+                                }>
+                                    <span className="d-flex justify-content-center align-items-center text-center align-middle h-100">{seat.seatNumber}</span>
                                 </div>
                             </div>
                         )

@@ -35,8 +35,8 @@ $secondary: #C9C5BA;
 
 
 .square {
-    width: 2em;
-    height: 2em;
+    width: 2.5em;
+    height: 2.5em;
 }
 
 .taken-seat {
@@ -46,4 +46,8 @@ $secondary: #C9C5BA;
 
 .chosen-seat {
     background-color: #ffc107;
+}
+
+.selected-seat {
+    border: 5px solid #0000FF;
 }
