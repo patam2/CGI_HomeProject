@@ -11990,4 +11990,9 @@ textarea.form-control-lg {
 .table-header {
   background-color: #3b3b3b;
   color: white;
+}
+
+.square {
+  width: 2em;
+  height: 2em;
 }/*# sourceMappingURL=style.css.map */

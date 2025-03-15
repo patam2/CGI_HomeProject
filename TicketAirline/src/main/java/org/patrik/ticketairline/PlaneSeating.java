@@ -3,6 +3,7 @@ package org.patrik.ticketairline;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PlaneSeating {
     public List<List<Seat>> seats = new ArrayList<>();
@@ -20,13 +21,13 @@ public class PlaneSeating {
             for (int j = 1; j < 7; j++) {
                 //System.out.println(j);
                 if (j == 1 || j == 6) {
-                    row.add(new Seat(Integer.toString(j + 6*i), "Window", legRoom, closeToExit));
+                    row.add(new Seat(Integer.toString(j + 6*i), "Window", legRoom, closeToExit, Math.random() < 0.5));
                 }
                 if (j == 2 || j == 5) {
-                    row.add(new Seat(Integer.toString(j + 6* i), "Middle", legRoom, closeToExit));
+                    row.add(new Seat(Integer.toString(j + 6* i), "Middle", legRoom, closeToExit, Math.random() < 0.5));
                 }
                 if (j == 3 || j== 4) {
-                    row.add(new Seat(Integer.toString(j + 6*i), "Aisle", legRoom, closeToExit));
+                    row.add(new Seat(Integer.toString(j + 6*i), "Aisle", legRoom, closeToExit, Math.random() < 0.5  ));
                 }
             }
             //System.out.println(row);
