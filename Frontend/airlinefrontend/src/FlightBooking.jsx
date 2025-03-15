@@ -2,25 +2,72 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 
+function isSublistInNestedArray(sublist, nestedArray) {
+    return nestedArray.some(arr => 
+      arr.length === sublist.length && 
+      arr.every((val, index) => val === sublist[index])
+    );
+}
+
 function FlightBookGrid({ flightData, requirements, changeRequirements}) {
+    const [seatsSuggested, setSuggestedSeats] = useState(Array())
     useEffect(() => {
+        const checkForSeatSuitability = (seat) => {
+            if (seat.isTaken) {
+                return false
+            }
+            else {
+                if (seat.legRoom === "Normal" && requirements.legRoom === true) {
+                    return false
+                }
+                if (seat.closeToExit === false && requirements.closeToExit === true) {
+                    return false
+                }
+            }
+            return true
+        }
+
         const suggestseats = () => {
-            console.log(requirements )
+            setSuggestedSeats([]);
+            
+            if (!flightData) {
+                return;
+            }
+            
+            const newSuggestedSeats = [];
+            
+            for (let x = 0; x < requirements.ticketCount; x++) {
+                seatSearch:
+                for (let i = 0; i < flightData.length; i++) {
+                    for (let j = 0; j < flightData[i].length; j++) {
+                        if (checkForSeatSuitability(flightData[i][j]) && 
+                            !isSublistInNestedArray([i, j], newSuggestedSeats)) {
+                            newSuggestedSeats.push([i, j]);
+                            break seatSearch;
+                        }
+                    }
+                }
+            }
+            
+            setSuggestedSeats(newSuggestedSeats);
+            console.log("Added seats:", newSuggestedSeats);
         };
         suggestseats()
-
-        },[requirements] 
+        console.log(seatsSuggested, requirements)
+        },[flightData, requirements] 
     )
 
 
     return (
         <div className="d-flex flex-row">
-            {flightData && flightData.map((elem, index) => (
-                <div className="row mb-2 flex-column p-3" key={index}>
-                    {elem.map((seat, i) => {
+            {flightData && flightData.map((elem, i) => (
+                <div className="row mb-2 flex-column p-3" key={i}>
+                    {elem.map((seat, j) => {
                         return (
-                            <div className={`col text-center pt-${i === 3 ? "3": "1"} ps-${seat.legRoom === "Extra" ? "2" : "0"}`} key={seat.seatNumber}>
-                                <div className={`p-0 my-auto border square rounded ${seat.isTaken ? "bg-danger" : ""}`}>
+                            <div className={`col text-center pt-${j === 3 ? "3": "1"} ps-${seat.legRoom === "Extra" ? "2" : "0"}`} key={seat.seatNumber}>
+                                <div className={
+                                    `p-0 my-auto border square rounded ${seat.isTaken ? "taken-seat" : ""} 
+                                    ${isSublistInNestedArray([i,j ], seatsSuggested) ? "chosen-seat": ""}`}>
                                     <span className="align-middle h-100">{seat.seatNumber}</span>
                                 </div>
                             </div>
@@ -38,7 +85,7 @@ export default function FlightBookingPage () {
         ticketCount: 1,
         sitTogether: false,
         legRoom: false,
-        nearExit: false,
+        closeToExit: false,
         last_change: ""
     })
     const [flightData, setFlightData] = useState({planeSeating: {seats: []}})
@@ -46,7 +93,7 @@ export default function FlightBookingPage () {
     let flightId = useParams().flightId
 
     const changeRequirements = (changed, value) => {
-        if ((changed === "legRoom" || changed === "nearExit") && (requirements.legRoom != requirements.nearExit)) {
+        if ((changed === "legRoom" || changed === "closeToExit") && (requirements.legRoom != requirements.closeToExit)) {
             if (!value){
                 console.log('all good')
             }
@@ -62,6 +109,20 @@ export default function FlightBookingPage () {
                 ["last_change"]: changed
             })
         )
+    }
+
+    const addTicket = (operation) => {
+        if (operation === "add") {
+            setRequirements(
+                requirements =>({
+                    ...requirements,
+                    ["ticketCount"]: requirements.ticketCount + 1,
+                    ["last_change"]: "ticketCount"
+                })
+            )
+        }
+
+        
     }
 
     useEffect(() => {
@@ -86,13 +147,7 @@ export default function FlightBookingPage () {
                     <div className="d-flex justify-content-between">
                         <div>
                             <label for="seatpicker me-1">Piletite arv</label>
-                            <select className="me-3">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
+                            <button onClick={() => {addTicket("add")}}>Lisa pilet</button>
                         </div>
 
                         <div className="">
@@ -127,14 +182,16 @@ export default function FlightBookingPage () {
                             <input 
                                 id="emergency" 
                                 type="checkbox" 
-                                checked={requirements.nearExit} 
-                                onChange={()=> changeRequirements("nearExit", !requirements.nearExit)} 
+                                checked={requirements.closeToExit} 
+                                onChange={()=> changeRequirements("closeToExit", !requirements.closeToExit)} 
                                 className="me-2">
                                 
                             </input>
                         </div>
 
                     </div>
+
+
 
                 </div>
                 <div>

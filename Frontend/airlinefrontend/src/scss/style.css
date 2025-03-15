@@ -11995,4 +11995,13 @@ textarea.form-control-lg {
 .square {
   width: 2em;
   height: 2em;
+}
+
+.taken-seat {
+  background-color: gray;
+  color: white;
+}
+
+.chosen-seat {
+  background-color: #ffc107;
 }/*# sourceMappingURL=style.css.map */
