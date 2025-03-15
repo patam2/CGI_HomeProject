@@ -1,4 +1,4 @@
-import { act, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 
@@ -38,7 +38,7 @@ function FlightBookGrid({ flightData, requirements}) {
                 return;
             }
             
-            const newSuggestedSeats = [];
+            var newSuggestedSeats = [];
             
             for (let x = 0; x < requirements.ticketCount; x++) {
                 seatSearch:
@@ -46,16 +46,43 @@ function FlightBookGrid({ flightData, requirements}) {
                     for (let j = 0; j < flightData[i].length; j++) {
                         if (checkForSeatSuitability(flightData[i][j]) && 
                             !isSublistInNestedArray([i, j], newSuggestedSeats)) {
-                            newSuggestedSeats.push([i, j]);
-                            break seatSearch;
+                            
+                                newSuggestedSeats.push([i, j]);
+                                if (!requirements.sitTogether){
+                                    break seatSearch
+                                }
+                                //break seatSearch;
                         }
                     }
                 }
             }
-            
+            var longest_streak = [0,-1] //index, length
+            var current_streak = [0,0]
+            var last_obje = newSuggestedSeats[0]
+
+            for (let i = 1; i < newSuggestedSeats.length; i ++) {
+                var obje = newSuggestedSeats[i]
+                if (obje[1] === last_obje[1] + 1 && obje[0] == obje[0]) {
+                    current_streak = [current_streak[0], current_streak[1]+1]
+                }
+                else {
+                    current_streak = [i,1]
+                }
+                if (longest_streak[1] < current_streak[1]) {
+                    longest_streak = current_streak
+                }
+                last_obje = obje
+            } 
+            if (longest_streak[1] >= requirements.ticketCount) {
+                console.log('before', newSuggestedSeats,  requirements.ticketCount)
+                newSuggestedSeats = newSuggestedSeats.slice(longest_streak[0], longest_streak[0] + requirements.ticketCount)
+                console.log("line78", longest_streak, newSuggestedSeats)
+            }
+            else {
+                newSuggestedSeats = newSuggestedSeats.slice(0, requirements.ticketCount)
+            }
             setSuggestedSeats(newSuggestedSeats);
             setActiveSeat(newSuggestedSeats[newSuggestedSeats.length-1])
-            console.log("Added seats:", newSuggestedSeats);
         };
         suggestseats()
         //console.log(seatsSuggested, requirements, activeSeat)
@@ -181,7 +208,15 @@ export default function FlightBookingPage () {
                     <div className="d-flex justify-content-between">
                         <div>
                             <label for="seatpicker me-1">Piletite arv</label>
-                            <button onClick={() => {addTicket("add")}}>Lisa pilet</button>
+                            <select name="ticketCount" onChange={(e) => changeRequirements("ticketCount", Number(e.target.value))} id="ticketCount">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+
+                            </select>
                         </div>
 
                         <div className="">
