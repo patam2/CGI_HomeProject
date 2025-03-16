@@ -51,7 +51,6 @@ function FlightBookGrid({ flightData, requirements}) {
                                 if (!requirements.sitTogether){
                                     break seatSearch
                                 }
-                                //break seatSearch;
                         }
                     }
                 }
@@ -74,9 +73,7 @@ function FlightBookGrid({ flightData, requirements}) {
                 last_obje = obje
             } 
             if (longest_streak[1] >= requirements.ticketCount) {
-                console.log('before', newSuggestedSeats,  requirements.ticketCount)
                 newSuggestedSeats = newSuggestedSeats.slice(longest_streak[0], longest_streak[0] + requirements.ticketCount)
-                console.log("line78", longest_streak, newSuggestedSeats)
             }
             else {
                 newSuggestedSeats = newSuggestedSeats.slice(0, requirements.ticketCount)
@@ -121,24 +118,34 @@ function FlightBookGrid({ flightData, requirements}) {
                         return (
                             <div 
                                 onClick={() => {filterForSuggestedSeats([i, j])}}
-                                className={`col text-center pt-${j === 3 ? "3": "1"} ps-${seat.legRoom === "Extra" ? "2" : "0"}`} key={seat.seatNumber}>
-                                <div className={
-                                    `p-0 my-auto square rounded 
-                                    ${seat.isTaken ? "taken-seat" : ""} 
-                                    ${isSublistInNestedArray([i,j ], seatsSuggested) ? "chosen-seat": ""}
-                                    ${JSON.stringify([i,j]) == JSON.stringify(activeSeat) ? "selected-seat": "border "}
-                                    `
-                                }>
-                                    <span className="d-flex justify-content-center align-items-center text-center align-middle h-100">{seat.seatNumber}</span>
+                                className={`col text-center pt-${j === 3 ? "3": "1"} ps-${seat.legRoom === "Extra" ? "2" : "0"}`} 
+                                key={seat.seatNumber}
+                            >
+                                <div 
+                                    className={`
+                                        p-0 my-auto square rounded 
+                                        ${seat.isTaken ? "taken-seat" : ""} 
+                                        ${isSublistInNestedArray([i, j], seatsSuggested) ? "chosen-seat": ""}
+                                        ${JSON.stringify([i, j]) == JSON.stringify(activeSeat) ? "selected-seat": "border"}
+                                    `}
+                                >
+                                    <span className="d-flex justify-content-center align-items-center text-center align-middle h-100">
+                                        {seat.seatNumber}
+                                    </span>
+                                    <div className="zero-width-height exit-row-display-bottom">
+                                    {(seat.closeToExit && j===0) ? <img src="/bracket-square-svgrepo-com.svg" className="exit-row-display-bottom"></img>: <></>}
+
+                                    </div> 
+
                                 </div>
                             </div>
-                        )
+                        );
                     })}
+
                 </div>
             ))}
         </div>
-    );
-}
+    );}
 
 
 export default function FlightBookingPage () {

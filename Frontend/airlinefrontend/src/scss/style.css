@@ -12008,4 +12008,16 @@ textarea.form-control-lg {
 
 .selected-seat {
   border: 5px solid #0000FF;
+}
+
+.exit-row-display-bottom {
+  position: relative;
+  top: 7em;
+  left: -0.2em;
+  width: 2.8em;
+}
+
+.zero-width-height {
+  height: 0;
+  width: 0;
 }/*# sourceMappingURL=style.css.map */

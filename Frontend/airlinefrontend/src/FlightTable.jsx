@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 export function FlightTable() {
     const [flightData, setFlightData] = useState(Array())
     const [filteredFlightData, setFilteredFlightData] = useState(Array())
-    const [filter, setFilter] = useState({"departure": "", "arrival": ""})
+    const [filter, setFilter] = useState({"departure": "", "arrival": "", "dateFrom": new Date("01/01/1999"), "priceUnder": 99999})
 
     let navigate = useNavigate()
 
@@ -30,25 +30,47 @@ export function FlightTable() {
 
     const handleFilter = (ctx, key) => {
         const filtered = [];
-        const value = ctx.target.value.toLowerCase()
+        var value = ctx.target.value.toLowerCase()
+        if (key === "priceUnder" && value==='') {
+            value = 99999;
+        }
         setFilter(previous => ({
             ...previous,
             [key]: value
         }))
-
         flightData.forEach((item) => {
             if (key === "departure") {
                 if (item.departure.toLowerCase().includes(value) && item.arrival.toLowerCase().includes(filter.arrival)) {
-                    filtered.push(item)
+                    if ((item.flightPrice < filter.priceUnder && new Date(item.flightDate) > new Date(filter.dateFrom))) {
+                        filtered.push(item)
+                    }               
                 }
             }
 
             if (key === "arrival") {
                 if (item.arrival.toLowerCase().includes(value) && item.departure.toLowerCase().includes(filter.departure)) {
-                    filtered.push(item)
+                    if (item.flightPrice < filter.priceUnder && (new Date(item.flightDate) > new Date(filter.dateFrom))) {
+                        filtered.push(item)
+                    }
                 }
             }
 
+            if (key === "dateFrom") {
+                if (new Date(item.flightDate) > new Date(value)) {
+                    if (item.flightPrice < filter.priceUnder && item.arrival.toLowerCase().includes(filter.arrival) && item.departure.toLowerCase().includes(filter.departure)) {
+                        filtered.push(item)
+                    }
+                }
+            }
+
+            if (key === "priceUnder") {
+                if (item.flightPrice < new Number(value)) 
+                    if ((new Date(item.flightDate) > new Date(filter.dateFrom)) && item.arrival.toLowerCase().includes(filter.arrival) && item.departure.toLowerCase().includes(filter.departure)) {
+                        filtered.push(item)
+                    }
+
+            }
+ 
         })
         setFilteredFlightData(filtered)
 
@@ -56,8 +78,8 @@ export function FlightTable() {
 
     return (
         <>
-            <div className="row mb-3 flex-nowrap">
-                <div className="col-8 row">
+            <div className="w-100 row mb-3 flex-nowrap">
+                <div className="ps-3 col-8 row">
                     <div className="col-6 g-1">
                         <input className="form-control rounded-start  h-100" placeholder="Kust lendame?" onChange={(e) => handleFilter(e, 'departure')} ></input>
                     </div>
@@ -65,11 +87,11 @@ export function FlightTable() {
                         <input className="form-control  h-100 rounded-end" placeholder="Kuhu lendame?" onChange={(e) => handleFilter(e, 'arrival')}></input>
                     </div>
                 </div>
-                <div className="col-auto">
-                    <input type="date" className="h-100 form-control rounded-start"></input>
+                <div className="col-2">
+                    <input type="date" onChange={(e) => handleFilter(e, 'dateFrom')} className="h-100 form-control rounded-start"></input>
                 </div>
                 <div className="col-2">
-                    <input type="number" className="form-control h-100 rounded-end" placeholder="Max hind"></input>
+                    <input type="number" onChange={(e) => handleFilter(e, 'priceUnder')} className="form-control h-100 rounded-end" placeholder="Hind vähem kui"></input>
                 </div>
             </div>
 
@@ -81,7 +103,7 @@ export function FlightTable() {
                         <th>Kuupäev</th>
                         <th>Kellaaeg</th>
                         <th>Kestus</th>
-                        <th>Kood</th>
+                        <th>Hind</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +114,7 @@ export function FlightTable() {
                             <td>{val.flightDate}</td>
                             <td>{val.departureTime}</td>
                             <td>{val.flightTime}</td>
-                            <td>{val.flightNumber}</td>
+                            <td>{val.flightPrice}€</td>
                         </tr>
                     ))}
                 </tbody>

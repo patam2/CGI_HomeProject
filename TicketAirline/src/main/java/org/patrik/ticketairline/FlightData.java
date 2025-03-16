@@ -10,8 +10,9 @@ public class FlightData {
     public String flightTime;
     public String flightNumber;
     public String flightDate;
+    public Integer flightPrice;
     public PlaneSeating planeSeating;
-    public FlightData(String departure, String arrival, String departureTime, String flightTime, String flightNumber, String flightDate, Map output) {
+    public FlightData(String departure, String arrival, String departureTime, String flightTime, String flightNumber, String flightDate, Integer flightPrice, Map output) {
         this.departure = departure;
         this.arrival = arrival;
         this.departureTime = departureTime;
@@ -19,6 +20,7 @@ public class FlightData {
         this.flightNumber = flightNumber;
         this.flightDate = flightDate;
         this.planeSeating = new PlaneSeating();
+        this.flightPrice = flightPrice;
         output.put(flightNumber, this);
     }
 }
