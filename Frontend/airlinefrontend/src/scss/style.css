@@ -11997,27 +11997,28 @@ textarea.form-control-lg {
   height: 2.5em;
 }
 
+.mini-square {
+  width: 1.5em;
+  height: 1.5em;
+}
+
 .taken-seat {
-  background-color: gray;
+  background-color: gray !important;
   color: white;
 }
 
 .chosen-seat {
-  background-color: #ffc107;
+  background-color: #ffc107 !important;
+}
+
+.extra-leg-room-seat {
+  background-color: #A5C7F7;
+}
+
+.near-exit {
+  background-color: #B4EF94;
 }
 
 .selected-seat {
   border: 5px solid #0000FF;
-}
-
-.exit-row-display-bottom {
-  position: relative;
-  top: 7em;
-  left: -0.2em;
-  width: 2.8em;
-}
-
-.zero-width-height {
-  height: 0;
-  width: 0;
 }/*# sourceMappingURL=style.css.map */

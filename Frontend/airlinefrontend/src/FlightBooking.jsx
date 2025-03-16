@@ -65,12 +65,11 @@ export default function FlightBookingPage () {
             <h3>
                 Vali piletid plaanil
             </h3>
-            <div className="row">
                 <div className="align-self-stretch d-flex col-md-6 flex-column justify-content-between">
                     <div className="d-flex justify-content-between">
                         <div>
                             <label for="seatpicker me-1">Piletite arv</label>
-                            <select name="ticketCount" onChange={(e) => changeRequirements("ticketCount", Number(e.target.value))} id="ticketCount">
+                            <select name="ticketCount" onChange={(e) => changeRequirements("ticketCount", Number(e.target.value))} value={requirements.ticketCount} id="ticketCount">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -122,17 +121,18 @@ export default function FlightBookingPage () {
 
                     </div>
                 </div>
-                <div>
-                    <FlightBookGrid 
-                        flightData={flightData.planeSeating.seats} 
-                        requirements={
-                            requirements}
-                    >
+                
 
-                    </FlightBookGrid>
+                        <FlightBookGrid 
+                            flightData={flightData.planeSeating.seats} 
+                            requirements={
+                                requirements}
+                            flighPrice={flightData.flighPrice}
+                            changeRequirements={changeRequirements}
+                        >
+
+                        </FlightBookGrid>
+
                 </div>
-            </div>
-        </div>
-        
     )
 }
