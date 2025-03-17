@@ -2,8 +2,11 @@ import { useState, useEffect} from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router";
 
+import SeatLegend from "./SeatingLegend";
 
-
+import { checkForSeatSuitability } from "./utils/seatUtils";
+import { SeatGrid } from "./SeatGrid";
+import { TicketInfo } from "./TicketInfo";
 function isSublistInNestedArray(sublist, nestedArray) {
     return nestedArray.some(arr => 
       arr.length === sublist.length && 
@@ -19,47 +22,10 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
     const isManualChange = useRef(false)
 
     const navigate = useNavigate()
-    const bookSeats = (flightId, seatList) => {
-        fetch(`${import.meta.env.VITE_API_URL}/api/flights/${flightId}/book`, {
-            method: "POST",
-            body: JSON.stringify({'flightNumbers': seatList}),
-            headers: {"Content-Type": "application/json"}
-        })
-        .then((resp) => {
-            if (resp.status === 200) {
-                return resp.json();
-            } else {
-                throw new Error('Booking failed');
-            }
-        })
-        .then((js) => {
-            navigate("/tickets/" + js.uuid);
-        })
-        .catch(error => {
-            console.error('Error booking seats:', error);
-            // Handle error appropriately (show message to user, etc.)
-        });
-    };
+
 
     
-    
-    const checkForSeatSuitability = (seat, ignoreRequirements=false) => {
-        if (seat.isTaken) {
-            return false
-        }
-        if (ignoreRequirements) {
-            return true
-        }
-        else {
-            if (seat.legRoom === "Normal" && requirements.legRoom === true) {
-                return false
-            }
-            if (seat.closeToExit === false && requirements.closeToExit === true) {
-                return false
-            }
-        }
-        return true
-    }
+
 
     const suggestseats = () => {
         console.log('suggestseatscalled')
@@ -75,7 +41,7 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
             seatSearch:
             for (let i = 0; i < flightData.length; i++) {
                 for (let j = 0; j < flightData[i].length; j++) {
-                    if (checkForSeatSuitability(flightData[i][j]) && 
+                    if (checkForSeatSuitability(flightData[i][j], false, requirements) && 
                         !isSublistInNestedArray([i, j], newSuggestedSeats)) {
                             newSuggestedSeats.push([i, j]);
                             if (!requirements.sitTogether){
@@ -92,7 +58,7 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
                 seatSearch:
                 for (let i = 0; i < flightData.length; i++) {
                     for (let j = 0; j < flightData[i].length; j++) {
-                        if (checkForSeatSuitability(flightData[i][j], true) && 
+                        if (checkForSeatSuitability(flightData[i][j], true, requirements) && 
                             !isSublistInNestedArray([i, j], newSuggestedSeats)) {
                                 newSuggestedSeats.push([i, j]);
                                 if (requirements.ticketCount === newSuggestedSeats.length) {
@@ -169,7 +135,8 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
             setActiveSeat(arr)
         }
         else {
-            if (checkForSeatSuitability(flightData[arr[0]][arr[1]]), true) {
+            console.log("aaa", flightData[arr[0]][arr[1]])
+            if (checkForSeatSuitability(flightData[arr[0]][arr[1]], true, requirements)) {
                 const newSuggestedSeats = [...seatsSuggested]
                 for (let selectedSeat = 0; selectedSeat < newSuggestedSeats.length; selectedSeat ++) {
                     console.log(arr,newSuggestedSeats[selectedSeat])
@@ -187,7 +154,7 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
         }
     }
 
-    const TicketInfo = () => {
+    const ATicketInfo = () => {
         const ticketDivs = [];
         const tix = []
         const ticketCoordinates = []
@@ -223,61 +190,24 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
     return (
         <div className="row">
             <div className="col-xl-8">
-                <div className="d-flex">
-                    {flightData && flightData.map((elem, i) => (
-                    <div className="row mb-2 flex-column p-3" key={i}>
-                        {elem.map((seat, j) => {
-                            return (
-                                <div 
-                                    onClick={() => {filterForSuggestedSeats([i, j])}}
-                                    className={`col text-center pt-${j === 3 ? "3": "1"} ${seat.legRoom === "Extra" ? "ps-2" : "ps-0"}`} 
-                                    key={seat.seatNumber}
-                                >
-                                    <div 
-                                        className={`
-                                            p-0 my-auto square seat rounded 
-                                            ${seat.isTaken ? "taken-seat" : ""} 
-                                            ${seat.legRoom === "Extra" ? "extra-leg-room-seat" : ""}
-                                            ${seat.closeToExit ? "near-exit" : ""} 
-                                            ${isSublistInNestedArray([i, j], seatsSuggested) ? "chosen-seat": ""}
-                                            ${JSON.stringify([i, j]) == JSON.stringify(activeSeat) ? "selected-seat": "border"}
-                                        `}
-                                    >
-                                        <span className="d-flex justify-content-center align-items-center text-center align-middle h-100">
-                                            {seat.seatNumber}
-                                        </span>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    ))}
-                </div>
-                <div className="d-flex p-2 justify-content-start w-100">
-                    <div className="d-flex ">
-                        <div className="chosen-seat  mini-square seat rounded m-2"></div>
-                        <div className="my-auto">Valitud iste</div>
-                    </div>
-                    <div className="d-flex ">
-                        <div className="chosen-seat selected-seat mini-square seat rounded m-2"></div>
-                        <div className="my-auto">Aktiivne iste</div>
-                    </div>
-                    <div className="d-flex ">
-                        <div className="extra-leg-room-seat  mini-square seat rounded m-2"></div>
-                        <div className="my-auto">Ekstra jalaruum</div>
-                    </div>
-                    <div className="d-flex ">
-                        <div className="near-exit  mini-square seat rounded m-2"></div>
-                        <div className="my-auto">Väljapääsu lähedal</div>
-                    </div>
-                    <div className="d-flex ">
-                        <div className="taken-seat  mini-square seat rounded m-2"></div>
-                        <div className="my-auto">Võetud iste</div>
-                    </div>
-                </div>
+                <SeatGrid flightData={flightData} 
+                        filterForSuggestedSeats={filterForSuggestedSeats} 
+                        seatsSuggested={seatsSuggested}
+                        activeSeat={activeSeat}
+                ></SeatGrid>    
+            
+                <SeatLegend/>
         </div>
         <div className="col-xl-4">
-             <TicketInfo/>
+            <TicketInfo
+                seatsSuggested={seatsSuggested}
+                requirements={requirements}
+                flightData={flightData}
+                removeSuggestedSeat={removeSuggestedSeat}
+                flightPrice={flightPrice}
+                flightId={flightId}
+             />
          </div>
     </div>
     );}
+    

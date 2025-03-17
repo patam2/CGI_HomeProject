@@ -1,6 +1,6 @@
 import {useEffect, useState } from "react";
 import { useParams } from "react-router";
-import FlightBookGrid from "./FlightBookingGrid";
+import FlightBookGrid from "./FlightBookingGrid/FlightBookingGrid";
 
 
 export default function FlightBookingPage () {
