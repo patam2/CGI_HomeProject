@@ -1,4 +1,4 @@
-const SeatLegend = () => {
+export const SeatLegend = () => {
     return (
         <div className="d-flex p-2 justify-content-start w-100">
             <div className="d-flex ">
@@ -25,5 +25,3 @@ const SeatLegend = () => {
 
     )
 }
-
-export default SeatLegend

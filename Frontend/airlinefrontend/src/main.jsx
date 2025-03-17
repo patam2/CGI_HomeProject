@@ -4,9 +4,10 @@ import 'slick-carousel/slick/slick-theme.css'
 
 import { BrowserRouter, Routes, Route } from "react-router";
 
-import FlightBookingPage from './FlightBooking.jsx'
+import FlightBookingPage  from './FlightBooking.jsx'
 import App from './App.jsx'
 import { TicketDisplayPage } from './TicketDisplay.jsx';
+
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
