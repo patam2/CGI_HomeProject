@@ -19,7 +19,7 @@ export const TicketInfo = ({seatsSuggested, requirements, flightData, removeSugg
                         {seat.closeToExit && <><br></br><b>Väljapääsu real</b></> }
                         {seat.legRoom === "Extra" && <><br></br><b>Ekstra jalaruum</b></>}
                     </span>
-                    <button type="button" class="btn-close" 
+                    <button type="button" className="btn-close" 
                         onClick={(e) => removeSuggestedSeat([seatInfo.rowIndex, seatInfo.colIndex])} 
                         aria-label="Close">
                         

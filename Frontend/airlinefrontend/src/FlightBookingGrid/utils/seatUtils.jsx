@@ -49,7 +49,6 @@ export const bookSeats = (flightId, seatList, navigate) => {
     })
     .catch(error => {
         console.error('Error booking seats:', error);
-        // Handle error appropriately (show message to user, etc.)
     });
 };
 

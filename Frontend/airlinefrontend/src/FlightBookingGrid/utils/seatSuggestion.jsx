@@ -45,7 +45,6 @@ export const suggestSeats = (setSuggestedSeats, seatData, requirements, setActiv
     newSuggestedSeats = optimizeForSittingTogether(newSuggestedSeats, requirements.ticketCount)
     setSuggestedSeats(newSuggestedSeats);
     setActiveSeat(newSuggestedSeats[newSuggestedSeats.length-1])
-    console.log(newSuggestedSeats)
 };
 
 export const optimizeForSittingTogether = (suggestedseats, ticketCount) => {

@@ -51,7 +51,6 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
     
     //kontrollime, kas istet saab aktiivseks teha või uuele kohale viia
     const filterForSuggestedSeats = (arr) => {
-        console.log(arr, seatsSuggested)
         //iste on juba "valitud", teeme lihtsalt aktiivseks
         if (isSublistInNestedArray(arr, seatsSuggested)) {
             setActiveSeat(arr)
@@ -61,7 +60,6 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
             if (checkForSeatSuitability(flightData[arr[0]][arr[1]], true, requirements)) {
                 const newSuggestedSeats = [...seatsSuggested]
                 for (let selectedSeat = 0; selectedSeat < newSuggestedSeats.length; selectedSeat ++) {
-                    console.log(arr,newSuggestedSeats[selectedSeat])
                     if (activeSeat[0] == newSuggestedSeats[selectedSeat][0] && activeSeat[1] == newSuggestedSeats[selectedSeat][1]) {
                         newSuggestedSeats.splice(selectedSeat, 1);
                         break
