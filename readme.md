@@ -10,9 +10,15 @@ See fail sisaldab igapäevaseid märkmeid tehtud töö kohta ja kirjeldab protse
 - Lennutabeli funtsionaalsus (otsimine)
 
 ### 14-03-25
-- 
+- Edasine töö lennutabelis, otsimise täpsustamine
 
 ### 15-03-25
+- Lennu broneerimise lehe esimesed alged
 
 ### 16-03-25
-- 
+- Lennu broneerimise leht pea-aegu funktsionaalne
+
+### 17-03-25
+- Lennu broneerimise lehe bugfixid
+- Refactorimine
+- Piletite leht
