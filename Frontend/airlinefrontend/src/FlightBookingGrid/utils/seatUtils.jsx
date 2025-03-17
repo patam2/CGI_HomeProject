@@ -31,7 +31,7 @@ export const checkForSeatSuitability = (seat, ignoreRequirements=false, requirem
     return true
 }
 
-export const bookSeats = (flightId, seatList) => {
+export const bookSeats = (flightId, seatList, navigate) => {
     fetch(`${import.meta.env.VITE_API_URL}/api/flights/${flightId}/book`, {
         method: "POST",
         body: JSON.stringify({'flightNumbers': seatList}),

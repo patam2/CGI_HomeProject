@@ -12002,6 +12002,10 @@ textarea.form-control-lg {
   height: 1.5em;
 }
 
+.mh-25em {
+  max-height: 25em;
+}
+
 .taken-seat {
   background-color: gray !important;
   color: white;

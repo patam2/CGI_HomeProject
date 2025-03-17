@@ -1,14 +1,14 @@
-import { bookSeats } from "./utils/seatUtils";
-import { getSeatInfo } from "./utils/seatUtils";
+import { bookSeats, getSeatInfo } from "./utils/seatUtils";
+import { useNavigate } from "react-router";
 
 export const TicketInfo = ({seatsSuggested, requirements, flightData, removeSuggestedSeat, flightPrice, flightId}) => {
     if (seatsSuggested.length === 0 || requirements.ticketCount !== seatsSuggested.length) {
         return null
     }
 
+    var navigate = useNavigate()    
     const seatInfo = getSeatInfo(seatsSuggested, flightData);
     seatInfo.sort((a, b) => a.seatNumber - b.seatNumber)
-    console.log(seatInfo)
     const cost = requirements.ticketCount * flightPrice;
     return (
         <>
@@ -30,7 +30,7 @@ export const TicketInfo = ({seatsSuggested, requirements, flightData, removeSugg
                 <span className="my-auto">
                     Kokku valitud <b>{requirements.ticketCount}</b> piletit, <b>{cost}€</b>.
                 </span>
-                <button onClick={() => bookSeats(flightId, seatInfo.map(seat => seat.seatNumber))} 
+                <button onClick={() => bookSeats(flightId, seatInfo.map(seat => seat.seatNumber), navigate)} 
                     className="btn button border rounded">
                     Kinnitan kohad
                 </button>

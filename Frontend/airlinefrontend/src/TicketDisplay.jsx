@@ -32,7 +32,7 @@ export function TicketDisplayPage () {
     }
 
     const tickets = []
-    console.log(seatMap)
+
     for (let i = 0;i < ticketData.seatNrs.length; i++) {
         console.log(i, ticketData.seatNrs)
         let seat = seatMap[ticketData.seatNrs[i]]

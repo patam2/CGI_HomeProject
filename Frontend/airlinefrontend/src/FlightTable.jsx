@@ -22,7 +22,6 @@ export function FlightTable() {
     
         dataFetch();
       }, []);
-    console.log(flightData);
 
     const redirect = (where) => {
         navigate("/flight/" + where)
@@ -34,16 +33,25 @@ export function FlightTable() {
         if (key === "priceUnder" && value==='') {
             value = 99999;
         }
+        else if (key==="dateFrom" && value == "") {
+            value = "01/01/1999"
+        }
         setFilter(previous => ({
             ...previous,
             [key]: value
         }))
+        console.log(filter, key, value)
         flightData.forEach((item) => {
             if (key === "departure") {
                 if (item.departure.toLowerCase().includes(value) && item.arrival.toLowerCase().includes(filter.arrival)) {
                     if ((item.flightPrice < filter.priceUnder && new Date(item.flightDate) > new Date(filter.dateFrom))) {
                         filtered.push(item)
-                    }               
+                        //console.log(item)
+                    }       
+                    else {
+                        console.log(item.flightDate)
+                        console.log( new Date(item.flightDate), new Date(filter.dateFrom))
+                    }        
                 }
             }
 
@@ -94,32 +102,35 @@ export function FlightTable() {
                     <input type="number" onChange={(e) => handleFilter(e, 'priceUnder')} className="form-control h-100 rounded-end" placeholder="Hind vähem kui"></input>
                 </div>
             </div>
-
-            <table className="w-100">
+            <div className="mh-25em overflow-auto mb-5">
+                <table className="w-100">
                 <thead>
-                    <tr className="table-header">
-                        <th>Väljumine</th>
-                        <th>Sihtkoht</th>
-                        <th>Kuupäev</th>
-                        <th>Kellaaeg</th>
-                        <th>Kestus</th>
-                        <th>Hind</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredFlightData.map((val, indx) => (
-                        <tr onClick={() => redirect(val.flightNumber)} className={"table-item stripe-" + indx%2}>
-                            <td>{val.departure}</td>
-                            <td>{val.arrival}</td>
-                            <td>{val.flightDate}</td>
-                            <td>{val.departureTime}</td>
-                            <td>{val.flightTime}</td>
-                            <td>{val.flightPrice}€</td>
+                        <tr className="table-header">
+                            <th>Väljumine</th>
+                            <th>Sihtkoht</th>
+                            <th>Kuupäev</th>
+                            <th>Kellaaeg</th>
+                            <th>Kestus</th>
+                            <th>Hind</th>
+                            <th></th>
                         </tr>
-                    ))}
-                </tbody>
+                    </thead>
+                    <tbody>
+                        {filteredFlightData.map((val, indx) => (
+                            <tr onClick={() => redirect(val.flightNumber)} className={"table-item stripe-" + indx%2}>
+                                <td>{val.departure}</td>
+                                <td>{val.arrival}</td>
+                                <td>{val.flightDate}</td>
+                                <td>{val.departureTime}</td>
+                                <td>{val.flightTime}</td>
+                                <td>{val.flightPrice}€</td>
+                            </tr>
+                        ))}
+                    </tbody>
 
-            </table>
-        </>
+                </table>
+
+            </div>       
+         </>
     )
 }
