@@ -14,7 +14,6 @@ export function isSublistInNestedArray(sublist, nestedArray) {
  */
 
 export const checkForSeatSuitability = (seat, ignoreRequirements=false, requirements) => {
-    console.log("d")
     if (seat.isTaken) {
         return false
     }

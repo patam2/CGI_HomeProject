@@ -6,6 +6,7 @@ import SeatLegend from "./SeatingLegend";
 
 import { checkForSeatSuitability } from "./utils/seatUtils";
 import { SeatGrid } from "./SeatGrid";
+import { optimizeForSittingTogether } from "./utils/seatSuggestion";
 import { TicketInfo } from "./TicketInfo";
 function isSublistInNestedArray(sublist, nestedArray) {
     return nestedArray.some(arr => 
@@ -70,30 +71,7 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
             }
 
         }
-
-        var longest_streak = [0,-1] 
-        var current_streak = [0,0]
-        var last_obje = newSuggestedSeats[0]
-
-        for (let i = 1; i < newSuggestedSeats.length; i ++) {
-            var obje = newSuggestedSeats[i]
-            if (obje[1] === last_obje[1] + 1 && obje[0] == obje[0]) {
-                current_streak = [current_streak[0], current_streak[1]+1]
-            }
-            else {
-                current_streak = [i,1]
-            }
-            if (longest_streak[1] < current_streak[1]) {
-                longest_streak = current_streak
-            }
-            last_obje = obje
-        } 
-        if (longest_streak[1] >= requirements.ticketCount) {
-            newSuggestedSeats = newSuggestedSeats.slice(longest_streak[0], longest_streak[0] + requirements.ticketCount)
-        }
-        else {
-            newSuggestedSeats = newSuggestedSeats.slice(0, requirements.ticketCount)
-        }
+        newSuggestedSeats = optimizeForSittingTogether(newSuggestedSeats, requirements.ticketCount  )
         setSuggestedSeats(newSuggestedSeats);
         setActiveSeat(newSuggestedSeats[newSuggestedSeats.length-1])
     };
@@ -152,39 +130,6 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
 
             }
         }
-    }
-
-    const ATicketInfo = () => {
-        const ticketDivs = [];
-        const tix = []
-        const ticketCoordinates = []
-        if (seatsSuggested.length === 0 || requirements.ticketCount !== seatsSuggested.length) {
-            return <></>
-        }
-        for (let i = 0; i < seatsSuggested.length; i++) {
-            ticketCoordinates.push(seatsSuggested[i])
-            tix.push(flightData[seatsSuggested[i][0]][seatsSuggested[i][1]])
-        }
-        tix.sort((a, b) => a.seatNumber - b.seatNumber)
-        for (let j = 0; j < tix.length; j++) {
-            ticketDivs.push(
-                <div className="w-100 m-2 p-2 border rounded d-flex justify-content-between">
-                    <span>Pilet #{j+1}, istekoht nr. {tix[j].seatNumber}
-                         {tix[j].closeToExit ? <><br></br><b>Väljapääsu real</b></> : <></>}
-                         {tix[j].legRoom === "Extra" ? <><br></br><b>Ekstra jalaruum</b></>: <></>}</span>
-                    <button type="button" class="btn-close" onClick={(e) => removeSuggestedSeat(ticketCoordinates[j])} aria-label="Close"></button>
-                </div>
-            )
-        }
-        if (ticketDivs.length > 0) {
-            ticketDivs.push(
-                <div className="w-100 m-2 p-2 border rounded d-flex justify-content-between align-middle">
-                    <span className="my-auto">Kokku valitud <b>{requirements.ticketCount}</b> piletit, <b>{requirements.ticketCount * flightPrice}€</b>.</span>
-                    <button onClick={() => bookSeats(flightId, tix.map(seat => seat.seatNumber))} className="btn button border rounded">Kinnitan kohad</button>
-                </div>                
-            )
-        }
-        return (<>{ticketDivs}</> )
     }
 
     return (
