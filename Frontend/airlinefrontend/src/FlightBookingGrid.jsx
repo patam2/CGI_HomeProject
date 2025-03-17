@@ -9,16 +9,32 @@ function isSublistInNestedArray(sublist, nestedArray) {
     );
 }
 
+function bookSeats(flightId, seatList, bookedHook) {
+    fetch(`${import.meta.env.VITE_API_URL}/api/flights/${flightId}/book`, {
+        method: "POST",
+        body: JSON.stringify({'flightNumbers': seatList}),
+        headers: {"Content-Type": "application/json"}
+    }).then((resp) => {
+        if (resp.status === 200) {
+            bookedHook(true)
+        }
+    })  
+}
 
-export default function FlightBookGrid({ flightData, requirements, flightPrice, changeRequirements}) {
+
+export default function FlightBookGrid({ flightData, requirements, flightPrice, flightId, changeRequirements}) {
     const [seatsSuggested, setSuggestedSeats] = useState(Array())
     const [activeSeat, setActiveSeat] = useState(Array())
+    const [booked, setBooked] = useState(false)
     const isManualChange = useRef(false)
 
     
-    const checkForSeatSuitability = (seat) => {
+    const checkForSeatSuitability = (seat, ignoreRequirements=false) => {
         if (seat.isTaken) {
             return false
+        }
+        if (ignoreRequirements) {
+            return true
         }
         else {
             if (seat.legRoom === "Normal" && requirements.legRoom === true) {
@@ -47,7 +63,6 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
                 for (let j = 0; j < flightData[i].length; j++) {
                     if (checkForSeatSuitability(flightData[i][j]) && 
                         !isSublistInNestedArray([i, j], newSuggestedSeats)) {
-                        
                             newSuggestedSeats.push([i, j]);
                             if (!requirements.sitTogether){
                                 break seatSearch
@@ -56,7 +71,27 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
                 }
             }
         }
-        var longest_streak = [0,-1] //index, length
+
+        if (requirements.ticketCount > newSuggestedSeats.length) {
+            //Piletisoov suurem kui kriteeriale vastavaid pileteid, otsime uuesti, aga seekord lihtsalt tühjasid istmeid.
+            for (let x = 0; x < requirements.ticketCount-newSuggestedSeats.length; x++) {
+                seatSearch:
+                for (let i = 0; i < flightData.length; i++) {
+                    for (let j = 0; j < flightData[i].length; j++) {
+                        if (checkForSeatSuitability(flightData[i][j], true) && 
+                            !isSublistInNestedArray([i, j], newSuggestedSeats)) {
+                                newSuggestedSeats.push([i, j]);
+                                if (requirements.ticketCount === newSuggestedSeats.length) {
+                                    break seatSearch
+                                }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        var longest_streak = [0,-1] 
         var current_streak = [0,0]
         var last_obje = newSuggestedSeats[0]
 
@@ -115,17 +150,17 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
     
 
     const filterForSuggestedSeats = (arr) => {
+        console.log(arr, seatsSuggested)
         if (isSublistInNestedArray(arr, seatsSuggested)) {
             setActiveSeat(arr)
         }
         else {
-            if (checkForSeatSuitability(flightData[arr[0]][arr[1]])) {
+            if (checkForSeatSuitability(flightData[arr[0]][arr[1]]), true) {
                 const newSuggestedSeats = [...seatsSuggested]
                 for (let selectedSeat = 0; selectedSeat < newSuggestedSeats.length; selectedSeat ++) {
                     console.log(arr,newSuggestedSeats[selectedSeat])
                     if (activeSeat[0] == newSuggestedSeats[selectedSeat][0] && activeSeat[1] == newSuggestedSeats[selectedSeat][1]) {
                         newSuggestedSeats.splice(selectedSeat, 1);
-                        console.log('found')
                         break
                     }
                 }
@@ -160,12 +195,20 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
                 </div>
             )
         }
+        if (ticketDivs.length > 0) {
+            ticketDivs.push(
+                <div className="w-100 m-2 p-2 border rounded d-flex justify-content-between align-middle">
+                    <span className="my-auto">Kokku valitud <b>{requirements.ticketCount}</b> piletit, <b>{requirements.ticketCount * flightPrice}€</b>.</span>
+                    <button onClick={() => bookSeats(flightId, tix.map(seat => seat.seatNumber), setBooked)} className="btn button border rounded">Kinnitan kohad</button>
+                </div>                
+            )
+        }
         return (<>{ticketDivs}</> )
     }
 
     return (
         <div className="row">
-            <div className="col-md-8">
+            <div className="col-xl-8">
                 <div className="d-flex">
                     {flightData && flightData.map((elem, i) => (
                     <div className="row mb-2 flex-column p-3" key={i}>
@@ -199,7 +242,7 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
                 <div className="d-flex p-2 justify-content-start w-100">
                     <div className="d-flex ">
                         <div className="chosen-seat  mini-square seat rounded m-2"></div>
-                        <div className="my-auto">Broneeritud iste</div>
+                        <div className="my-auto">Valitud iste</div>
                     </div>
                     <div className="d-flex ">
                         <div className="chosen-seat selected-seat mini-square seat rounded m-2"></div>
@@ -211,11 +254,15 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
                     </div>
                     <div className="d-flex ">
                         <div className="near-exit  mini-square seat rounded m-2"></div>
-                        <div className="my-auto">Broneeritud iste</div>
+                        <div className="my-auto">Väljapääsu lähedal</div>
+                    </div>
+                    <div className="d-flex ">
+                        <div className="taken-seat  mini-square seat rounded m-2"></div>
+                        <div className="my-auto">Võetud iste</div>
                     </div>
                 </div>
         </div>
-        <div className="col-lg-4">
+        <div className="col-xl-4">
              <TicketInfo/>
          </div>
     </div>

@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import org.patrik.ticketairline.FlightData;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 @RestController
 public class ServeWeb {
+
+
     Map<String, FlightData> flightMap = new HashMap<>();
     ObjectMapper objectMapper = new ObjectMapper();
     FlightData[] allFlights =
@@ -45,5 +45,24 @@ public class ServeWeb {
         return objectMapper.writeValueAsString(flightMap.get(flightNumber));
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
+    @RequestMapping("/api/flights/{flightNumber}/book")
+    public Integer bookFlight(@PathVariable String flightNumber , @RequestBody BookPageBody input) {
+        int output = 0;
+        FlightData flightData = flightMap.get(flightNumber);
+        for (int i = 0; i < input.flightNumbers.length; i ++) {
+            String seatNr = input.flightNumbers[i];
+            for (int j = 0; j < flightData.planeSeating.seats.size(); j ++) {
+                for (int k=0; k<flightData.planeSeating.seats.get(j).size(); k ++) {
+                    Seat seat = flightData.planeSeating.seats.get(j).get(k);
+                    if (Objects.equals(seat.seatNumber, seatNr)) {
+                        seat.isTaken = true;
+                        output ++;
+                    }
+                }
+            }
+        }
+        return output;
+    }
 
 }

@@ -61,6 +61,17 @@ export default function FlightBookingPage () {
 
 
     return (
+        <>
+            <nav className='navbar bg-black mb-3'>
+                <div className='container-fluid'>
+                <a className="navbar-brand text-secondary" href='#'>FlyCGI - Pileti broneerimine</a>
+                    <ul className="navbar-nav">
+                    <li className="nav-item">
+                        <a className="nav-link text-secondary" aria-current="page" href="#">About us</a>
+                    </li>
+                    </ul>
+                </div>
+            </nav>
         <div className="container ">
             <h3>
                 Vali piletid plaanil
@@ -123,16 +134,14 @@ export default function FlightBookingPage () {
                 </div>
                 
 
-                        <FlightBookGrid 
-                            flightData={flightData.planeSeating.seats} 
-                            requirements={
-                                requirements}
-                            flighPrice={flightData.flighPrice}
-                            changeRequirements={changeRequirements}
-                        >
-
-                        </FlightBookGrid>
-
+                <FlightBookGrid 
+                    flightData={flightData.planeSeating.seats} 
+                    requirements={requirements}
+                    flightId={flightData.flightNumber}
+                    flightPrice={flightData.flightPrice}
+                    changeRequirements={changeRequirements}
+                />
                 </div>
+        </>
     )
 }
