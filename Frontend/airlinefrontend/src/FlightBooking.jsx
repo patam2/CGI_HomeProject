@@ -79,8 +79,9 @@ export default function FlightBookingPage () {
                 <div className="align-self-stretch d-flex col-md-6 flex-column justify-content-between">
                     <div className="d-flex justify-content-between">
                         <div>
-                            <label for="seatpicker me-1">Piletite arv</label>
+                            <label className="mx-1" for="seatpicker">Piletite arv</label>
                             <select name="ticketCount" onChange={(e) => changeRequirements("ticketCount", Number(e.target.value))} value={requirements.ticketCount} id="ticketCount">
+                                <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>

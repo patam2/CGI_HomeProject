@@ -11,12 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import java.util.UUID;
+
 
 @RestController
 public class ServeWeb {
 
 
     Map<String, FlightData> flightMap = new HashMap<>();
+    Map<String, Ticket> ticketMap = new HashMap<>();
     ObjectMapper objectMapper = new ObjectMapper();
     FlightData[] allFlights =
             {
@@ -47,7 +50,7 @@ public class ServeWeb {
 
     @CrossOrigin(origins = "http://localhost:5173")
     @RequestMapping("/api/flights/{flightNumber}/book")
-    public Integer bookFlight(@PathVariable String flightNumber , @RequestBody BookPageBody input) {
+    public String bookFlight(@PathVariable String flightNumber , @RequestBody BookPageBody input) {
         int output = 0;
         FlightData flightData = flightMap.get(flightNumber);
         for (int i = 0; i < input.flightNumbers.length; i ++) {
@@ -62,7 +65,16 @@ public class ServeWeb {
                 }
             }
         }
-        return output;
+        String uuid = UUID.randomUUID().toString();
+        ticketMap.put(uuid, new Ticket(uuid, flightData, input.flightNumbers));
+        return "{\"uuid\": \"" + uuid + "\"}";
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/api/tickets/{ticketId}")
+    public String getTicket(@PathVariable String ticketId) throws JsonProcessingException {
+        Ticket ticket = ticketMap.get(ticketId);
+        System.out.println(ticketMap);
+        return objectMapper.writeValueAsString(ticket);
+    }
 }

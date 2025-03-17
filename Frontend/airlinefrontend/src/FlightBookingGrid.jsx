@@ -1,5 +1,7 @@
 import { useState, useEffect} from "react";
 import { useRef } from "react";
+import { useNavigate } from "react-router";
+
 
 
 function isSublistInNestedArray(sublist, nestedArray) {
@@ -9,25 +11,37 @@ function isSublistInNestedArray(sublist, nestedArray) {
     );
 }
 
-function bookSeats(flightId, seatList, bookedHook) {
-    fetch(`${import.meta.env.VITE_API_URL}/api/flights/${flightId}/book`, {
-        method: "POST",
-        body: JSON.stringify({'flightNumbers': seatList}),
-        headers: {"Content-Type": "application/json"}
-    }).then((resp) => {
-        if (resp.status === 200) {
-            bookedHook(true)
-        }
-    })  
-}
 
 
 export default function FlightBookGrid({ flightData, requirements, flightPrice, flightId, changeRequirements}) {
     const [seatsSuggested, setSuggestedSeats] = useState(Array())
     const [activeSeat, setActiveSeat] = useState(Array())
-    const [booked, setBooked] = useState(false)
     const isManualChange = useRef(false)
 
+    const navigate = useNavigate()
+    const bookSeats = (flightId, seatList) => {
+        fetch(`${import.meta.env.VITE_API_URL}/api/flights/${flightId}/book`, {
+            method: "POST",
+            body: JSON.stringify({'flightNumbers': seatList}),
+            headers: {"Content-Type": "application/json"}
+        })
+        .then((resp) => {
+            if (resp.status === 200) {
+                return resp.json();
+            } else {
+                throw new Error('Booking failed');
+            }
+        })
+        .then((js) => {
+            navigate("/tickets/" + js.uuid);
+        })
+        .catch(error => {
+            console.error('Error booking seats:', error);
+            // Handle error appropriately (show message to user, etc.)
+        });
+    };
+
+    
     
     const checkForSeatSuitability = (seat, ignoreRequirements=false) => {
         if (seat.isTaken) {
@@ -199,7 +213,7 @@ export default function FlightBookGrid({ flightData, requirements, flightPrice, 
             ticketDivs.push(
                 <div className="w-100 m-2 p-2 border rounded d-flex justify-content-between align-middle">
                     <span className="my-auto">Kokku valitud <b>{requirements.ticketCount}</b> piletit, <b>{requirements.ticketCount * flightPrice}€</b>.</span>
-                    <button onClick={() => bookSeats(flightId, tix.map(seat => seat.seatNumber), setBooked)} className="btn button border rounded">Kinnitan kohad</button>
+                    <button onClick={() => bookSeats(flightId, tix.map(seat => seat.seatNumber))} className="btn button border rounded">Kinnitan kohad</button>
                 </div>                
             )
         }

@@ -6,14 +6,15 @@ import { BrowserRouter, Routes, Route } from "react-router";
 
 import FlightBookingPage from './FlightBooking.jsx'
 import App from './App.jsx'
-
+import { TicketDisplayPage } from './TicketDisplay.jsx';
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/flight/:flightId" element={<FlightBookingPage />}>
-      </Route>
+        <Route path="/flight/:flightId" element={<FlightBookingPage />}></Route>
+        <Route path='/tickets/:ticketId' element={<TicketDisplayPage/>}></Route>
+
     </Routes>
   </BrowserRouter>
 )
