@@ -1,6 +1,52 @@
-import { isSublistInNestedArray } from "./seatUtils";
+import { isSublistInNestedArray, checkForSeatSuitability} from "./seatUtils";
 
 
+export const suggestSeats = (setSuggestedSeats, seatData, requirements, setActiveSeat) => {
+    setSuggestedSeats([]);
+    if (!seatData) {
+        return;
+    }
+        
+    var newSuggestedSeats = [];
+        
+    for (let x = 0; x < requirements.ticketCount; x++) {
+        seatSearch:
+        for (let i = 0; i < seatData.length; i++) {
+            for (let j = 0; j < seatData[i].length; j++) {
+                if (checkForSeatSuitability(seatData[i][j], false, requirements) && 
+                    !isSublistInNestedArray([i, j], newSuggestedSeats)) {
+                        newSuggestedSeats.push([i, j]);
+                        if (!requirements.sitTogether){
+                            break seatSearch
+                        }
+                }
+            }
+        }
+    }
+
+    if (requirements.ticketCount > newSuggestedSeats.length) {
+        //Piletisoov suurem kui kriteeriale vastavaid pileteid, otsime uuesti, aga seekord lihtsalt tühjasid istmeid.
+        for (let x = 0; x < requirements.ticketCount-newSuggestedSeats.length; x++) {
+            seatSearch:
+            for (let i = 0; i < seatData.length; i++) {
+                for (let j = 0; j < seatData[i].length; j++) {
+                    if (checkForSeatSuitability(seatData[i][j], true, requirements) && 
+                        !isSublistInNestedArray([i, j], newSuggestedSeats)) {
+                            newSuggestedSeats.push([i, j]);
+                            if (requirements.ticketCount === newSuggestedSeats.length) {
+                                break seatSearch
+                            }
+                    }
+                }
+            }
+        }
+
+    }
+    newSuggestedSeats = optimizeForSittingTogether(newSuggestedSeats, requirements.ticketCount)
+    setSuggestedSeats(newSuggestedSeats);
+    setActiveSeat(newSuggestedSeats[newSuggestedSeats.length-1])
+    console.log(newSuggestedSeats)
+};
 
 export const optimizeForSittingTogether = (suggestedseats, ticketCount) => {
     var current_streak = [0,0] //suggestedseatsi index ja pikkus
