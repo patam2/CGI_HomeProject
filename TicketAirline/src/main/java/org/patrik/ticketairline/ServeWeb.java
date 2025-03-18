@@ -17,7 +17,6 @@ import java.util.UUID;
 @RestController
 public class ServeWeb {
 
-
     Map<String, FlightData> flightMap = new HashMap<>();
     Map<String, Ticket> ticketMap = new HashMap<>();
     ObjectMapper objectMapper = new ObjectMapper();
@@ -64,20 +63,19 @@ public class ServeWeb {
         return "index.html";
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = {"http://localhost:5173", "http://frontend:80", "http://localhost", "https://lennuk.ptamm.ee"})
     @GetMapping("/api/flights")
     public String serveFlights() throws JsonProcessingException {
         return objectMapper.writeValueAsString(allFlights);
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = {"http://localhost:5173", "http://frontend:80", "http://localhost", "https://lennuk.ptamm.ee"})
     @GetMapping("/api/flights/{flightNumber}")
     public String serveFlightData(@PathVariable String flightNumber) throws JsonProcessingException {
-        System.out.println(objectMapper.writeValueAsString(flightMap));
         return objectMapper.writeValueAsString(flightMap.get(flightNumber));
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = {"http://localhost:5173", "http://frontend:80", "http://localhost", "https://lennuk.ptamm.ee"})
     @RequestMapping("/api/flights/{flightNumber}/book")
     public String bookFlight(@PathVariable String flightNumber , @RequestBody BookPageBody input) {
         int output = 0;
@@ -99,11 +97,10 @@ public class ServeWeb {
         return "{\"uuid\": \"" + uuid + "\"}";
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = {"http://localhost:5173", "http://frontend:80", "http://localhost", "https://lennuk.ptamm.ee"})
     @GetMapping("/api/tickets/{ticketId}")
     public String getTicket(@PathVariable String ticketId) throws JsonProcessingException {
         Ticket ticket = ticketMap.get(ticketId);
-        System.out.println(ticketMap);
         return objectMapper.writeValueAsString(ticket);
     }
 }

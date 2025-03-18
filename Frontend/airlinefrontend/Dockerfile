@@ -1,13 +1,35 @@
-FROM node:18-alpine
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
-COPY package.json .
+COPY package*.json ./
+COPY yarn*.lock ./
 
+# Install dependencies
 RUN npm install
+
+# Force rebuild of esbuild to match versions
+RUN node node_modules/esbuild/install.js
+
+
+
 
 COPY . .
 
-EXPOSE 5173
+# Build the app
+RUN npm run build
 
-CMD [ "npm", "run", "dev" ]
+# Production stage
+FROM nginx:alpine
+
+# Copy the build output
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy custom nginx config if needed
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,32 @@
+version: '3.8'
+
+
+services:
+  frontend:
+    build:
+      context: ./Frontend/airlinefrontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    environment:
+      - VITE_API_URL=http://backend:8080
+
+  backend:
+    build:
+      context: ./TicketAirline
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+
+networks:
+  app-network:
+    driver: bridge
