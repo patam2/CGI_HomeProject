@@ -2,7 +2,9 @@
 CGI proovitööks tehtud lennubroneerimissait. Saadaval netist: https://lennuk.ptamm.ee/
 Käivitamine on kõige lihtsam Dockeri kaudu. 
 `git clone https://github.com/patam2/CGI_HomeProject`
+
 `cd CGI_HomeProject`
+
 `docker compose up`
 
 Töö tegemisel võtsin GitHub CoPiloti maha, et oleks rohkem isetehtud koodi. AI -- minu puhul Claude -- poolt kasutasin abi, et *refactor*ida koodi. Lisaks sellele kasutasin toda, et saada tehnilise teostuse ideid lennutabeli otsingufunktsiooni jaoks + *bug*ide lahendamiseks, kui oma kogemus ei hakanud nende peale.
