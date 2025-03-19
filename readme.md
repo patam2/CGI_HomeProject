@@ -41,3 +41,5 @@ See fail sisaldab igapäevaseid märkmeid tehtud töö kohta ja kirjeldab protse
 - Refactorimine
 - Piletite leht
 
+### 18-03-25
+- Dockeri konteinerisse!
