@@ -5,7 +5,7 @@ ARG VITE_API_URL
 ARG VITE_API_KEY
 
 # Set environment variables during the build process
-ENV VITE_API_URL=http://backend:8080
+ENV VITE_API_URL=http://localhost:8080
 
 
 
