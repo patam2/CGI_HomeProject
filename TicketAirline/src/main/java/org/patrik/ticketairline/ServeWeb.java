@@ -3,8 +3,6 @@ package org.patrik.ticketairline;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-import org.patrik.ticketairline.FlightData;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -78,7 +76,6 @@ public class ServeWeb {
     @CrossOrigin(origins = {"http://localhost:5173", "http://frontend:80", "http://localhost", "https://lennuk.ptamm.ee"})
     @RequestMapping("/api/flights/{flightNumber}/book")
     public String bookFlight(@PathVariable String flightNumber , @RequestBody BookPageBody input) {
-        int output = 0;
         FlightData flightData = flightMap.get(flightNumber);
         for (int i = 0; i < input.flightNumbers.length; i ++) {
             String seatNr = input.flightNumbers[i];
@@ -86,8 +83,11 @@ public class ServeWeb {
                 for (int k=0; k<flightData.planeSeating.seats.get(j).size(); k ++) {
                     Seat seat = flightData.planeSeating.seats.get(j).get(k);
                     if (Objects.equals(seat.seatNumber, seatNr)) {
+                        System.out.println(seat);
+                        if (seat.isTaken) {
+                            return "{\"error\": \"Seat is taken\"}";
+                        }
                         seat.isTaken = true;
-                        output ++;
                     }
                 }
             }
