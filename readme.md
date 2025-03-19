@@ -9,7 +9,7 @@ Käivitamine on kõige lihtsam Dockeri kaudu.
 
 `docker compose up`
 
-Töö tegemisel võtsin GitHub CoPiloti maha, et oleks rohkem isetehtud koodi. AI -- minu puhul Claude -- poolt kasutasin abi, et *refactor*ida koodi. Lisaks sellele kasutasin toda, et saada tehnilise teostuse ideid lennutabeli otsingufunktsiooni jaoks + *bug*ide lahendamiseks, kui oma kogemus ei hakanud nende peale.
+Töö tegemisel võtsin GitHub CoPiloti maha, et oleks rohkem isetehtud koodi. AI -- minu puhul Claude -- poolt kasutasin abi, et *refactor*ida koodi. Lisaks sellele kasutasin toda, et saada tehnilise teostuse ideid lennutabeli otsingufunktsiooni jaoks + *bug*ide lahendamiseks, kui oma kogemus ei hakanud nende peale. Suuremalt jaolt on mõlemad Dockerfile'd AI poolt koostatud.
 
 Summaarselt läks töö tegemise peale umbes 20 tundi. Arenduse protsessi juures jäi ebaselgeks, kas "väljapääsu juures" oli mõeldud hädaabi väljapääsu rida või lennuki esi- ja taguotsa. Eeldasin, et tegu on nn. *exit row*'iga ja rakendasin esimese varjandi. 
 
