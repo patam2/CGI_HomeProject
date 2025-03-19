@@ -1,8 +1,7 @@
+#Koodid on võetud StackOverflowist (env) ja ülejäänud Claude poolt
+
 FROM node:20-alpine AS build
 
-# Define build arguments for environment variables
-ARG VITE_API_URL
-ARG VITE_API_KEY
 
 # Set environment variables during the build process
 ENV VITE_API_URL=http://localhost:8080

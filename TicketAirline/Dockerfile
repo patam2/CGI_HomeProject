@@ -1,4 +1,4 @@
-    # Build stage
+# Koodid on võetud AI poolt.
 FROM gradle:8.6-jdk21-alpine AS build
 
 WORKDIR /app
