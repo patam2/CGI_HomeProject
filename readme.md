@@ -1,5 +1,7 @@
 ## CGI proovitöö
-CGI proovitööks tehtud lennubroneerimissait. Saadaval netist: https://lennuk.ptamm.ee/
+CGI proovitööks tehtud lennubroneerimissait. Backend on tehtud Java abil ja Front-end on Reacti raamistikku kasutades loodud.
+
+Saadaval netist: https://lennuk.ptamm.ee/
 
 Käivitamine on kõige lihtsam Dockeri kaudu. 
 
